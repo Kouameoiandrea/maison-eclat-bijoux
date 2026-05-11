@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maison Eclat Bijoux | Colliers, montres et bracelets</title>
+    <link rel="preconnect" href="https://images.unsplash.com">
+    <link rel="preconnect" href="https://images.pexels.com">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="site-header">
+        <nav class="top-nav">
+            <a class="brand" href="#produits" aria-label="Boutique">
+                <span class="brand-main">MAISON</span>
+                <span class="brand-sub">Eclat Bijoux</span>
+            </a>
+
+            <a class="delivery-link" href="#produits">
+                <span>Livrer a</span>
+                <strong>Abidjan</strong>
+            </a>
+
+            <form class="search-bar" id="search-form" role="search">
+                <select id="search-category" aria-label="Categorie de recherche">
+                    <option value="">Toutes</option>
+                </select>
+                <input id="search-input" type="search" placeholder="Rechercher un produit" autocomplete="off">
+                <button type="submit">Rechercher</button>
+            </form>
+
+            <div class="account-links">
+                <button id="auth-link" type="button" class="auth-link-button">
+                    <span>Bonjour</span>
+                    <strong>Identifiez-vous</strong>
+                </button>
+                <a href="/admin/orders">
+                    <span>Tableau</span>
+                    <strong>admin</strong>
+                </a>
+            </div>
+
+            <label class="language-switcher" id="language-tabs" aria-label="Changer la langue">
+                <span>Langue</span>
+                <select id="language-select">
+                    <option value="fr">Français</option>
+                    <option value="en">English</option>
+                    <option value="ar">العربية</option>
+                    <option value="es">Español</option>
+                    <option value="de">Deutsch</option>
+                    <option value="pt">Português</option>
+                </select>
+            </label>
+
+            <button class="cart-button" type="button" aria-label="Ouvrir le panier">
+                <span class="cart-icon">🛒</span>
+                <span class="cart-count" id="cart-count">0</span>
+                <span class="cart-text">Panier</span>
+            </button>
+
+            <button class="menu-button" type="button" aria-label="Ouvrir le menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </nav>
+
+        <nav class="sub-nav" aria-label="Categories principales">
+            <div class="nav-links" id="nav-links">
+                <a href="#produits" data-nav-action="all">Toutes</a>
+                <a href="#produits" data-nav-action="flash">Ventes Flash</a>
+                <a href="#produits" data-nav-action="best">Meilleures ventes</a>
+                <a href="#produits" data-nav-action="new">Nouveautes</a>
+                <a href="#produits" data-nav-action="category" data-category="Colliers">Colliers</a>
+                <a href="#produits" data-nav-action="category" data-category="Bracelets">Bracelets</a>
+                <a href="#engagements">Service client</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="accueil" class="hero">
+            <div class="hero-media" role="img" aria-label="Bijoux luxueux sur fond sombre"></div>
+            <div class="hero-content">
+                <p class="eyebrow">Collection bijoux a Abidjan</p>
+                <h1>L'eclat des bijoux, le style des montres</h1>
+                <p>Colliers lumineux, chaines elegantes, bracelets, bagues, boucles et montres premium avec des prix clairs en FCFA.</p>
+                <div class="hero-highlights" aria-label="Rayons principaux">
+                    <span>Colliers</span>
+                    <span>Bracelets</span>
+                    <span>Bagues</span>
+                    <span>Montres</span>
+                </div>
+                <div class="hero-actions">
+                    <a class="button primary" href="#produits">Explorer la collection</a>
+                    <a class="button secondary" href="#produits">Nouveautés</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="strip" aria-label="Avantages">
+            <div>
+                <strong>Prix des produits</strong>
+                <span>dès 9 000 FCFA</span>
+            </div>
+            <div>
+                <strong>Paiement sécurisé</strong>
+                <span>commande simple et rapide</span>
+            </div>
+            <div>
+                <strong>Retour 14 jours</strong>
+                <span>si la taille ne convient pas</span>
+            </div>
+        </section>
+
+        <section id="produits" class="section">
+            <div class="breadcrumbs">
+                <a href="#produits">Accueil</a>
+                <span>&gt;</span>
+                <a href="#produits">Bijoux</a>
+                <span>&gt;</span>
+                <strong>Colliers, bracelets et montres</strong>
+            </div>
+
+            <div class="results-bar">
+                <div>
+                    <strong id="results-summary">Resultats produits</strong>
+                    <span id="page-summary">Prix et details pour colliers, chaines, pendentifs, bracelets et montres</span>
+                </div>
+                <div class="catalog-stats" aria-label="Apercu catalogue">
+                    <span><strong id="catalog-count">0</strong> produits</span>
+                    <span><strong id="catalog-pages">0</strong> pages</span>
+                    <span><strong id="catalog-categories">0</strong> categories</span>
+                </div>
+                <label class="sort-control">
+                    <span>Trier par</span>
+                    <select id="sort-select">
+                        <option value="featured">Pertinence</option>
+                        <option value="price-asc">Prix croissant</option>
+                        <option value="price-desc">Prix decroissant</option>
+                        <option value="stock-desc">Meilleur stock</option>
+                    </select>
+                </label>
+            </div>
+
+            <div class="search-layout">
+                <aside class="filters-panel" aria-label="Filtres produits">
+                    <h2>Affiner par</h2>
+
+                    <div class="filter-group">
+                        <h3>Departement</h3>
+                        <div class="quick-filters" aria-label="Filtres rapides">
+                            <button type="button" data-quick-category="Colliers">Colliers</button>
+                            <button type="button" data-quick-category="Bracelets">Bracelets</button>
+                            <button type="button" data-quick-category="Montres">Montres</button>
+                            <button type="button" data-quick-category="Bagues">Bagues</button>
+                        </div>
+                        <select id="category-filter">
+                            <option value="">Toutes les categories</option>
+                        </select>
+                        <div id="categories-container" class="category-list"></div>
+                    </div>
+
+                    <div class="filter-group">
+                        <h3>Prix</h3>
+                        <label>
+                            <span>Minimum FCFA</span>
+                            <input id="price-min" type="number" min="0" step="1000" placeholder="0">
+                        </label>
+                        <label>
+                            <span>Maximum FCFA</span>
+                            <input id="price-max" type="number" min="0" step="1000" placeholder="100000">
+                        </label>
+                    </div>
+
+                    <div class="filter-group">
+                        <h3>Disponibilite</h3>
+                        <label class="checkbox-line">
+                            <input id="available-only" type="checkbox">
+                            <span>Inclure uniquement les articles en stock</span>
+                        </label>
+                    </div>
+                </aside>
+
+                <div class="results-column">
+                    <div class="results-heading">
+                        <h1>Resultats pour <span id="query-label">bijoux</span></h1>
+                        <p>Parcourez les bijoux et montres par pages pour trouver rapidement le modele voulu.</p>
+                    </div>
+                    <div id="products-container" class="products-grid"></div>
+                    <nav id="pagination-bottom" class="pagination" aria-label="Pagination basse"></nav>
+                </div>
+            </div>
+        </section>
+
+        <section id="engagements" class="section commitments">
+            <div class="commitment-text">
+                <p class="eyebrow">Nos engagements</p>
+                <h2>Des bijoux choisis avec soin</h2>
+                <p>Decouvrez une selection elegante de colliers, chaines, bracelets, bagues, boucles et montres pour offrir ou se faire plaisir.</p>
+            </div>
+            <div class="commitment-grid">
+                <article>
+                    <h3>Articles bien presentes</h3>
+                    <p>Chaque modele affiche sa photo, son prix en FCFA et les details utiles pour choisir facilement.</p>
+                </article>
+                <article>
+                    <h3>Achat simple</h3>
+                    <p>Ajoutez vos bijoux au panier, changez les quantites et preparez votre commande en quelques clics.</p>
+                </article>
+                <article>
+                    <h3>Confort partout</h3>
+                    <p>La boutique reste agreable a utiliser sur telephone, tablette et ordinateur.</p>
+                </article>
+            </div>
+        </section>
+
+        <section id="contact" class="section contact-section">
+            <div class="contact-info">
+                <div>
+                    <p class="eyebrow">Contact</p>
+                    <h2>Besoin d'un bijou precis ?</h2>
+                    <p class="contact-intro">Laissez votre demande ou contactez-nous directement pour une commande, une taille, une livraison ou un renseignement produit.</p>
+                </div>
+                <div class="contact-details" aria-label="Informations de contact">
+                    <div>
+                        <span>Telephone</span>
+                        <strong>+225 07 00 00 00 00</strong>
+                    </div>
+                    <div>
+                        <span>Email</span>
+                        <strong>contact@maisoneclat.ci</strong>
+                    </div>
+                    <div>
+                        <span>Adresse</span>
+                        <strong>Abidjan, Cote d'Ivoire</strong>
+                    </div>
+                    <div>
+                        <span>Disponibilite</span>
+                        <strong>Lun - Sam, 8h30 - 18h30</strong>
+                    </div>
+                </div>
+            </div>
+            <form id="contact-form" class="contact-form">
+                <label>
+                    <span>Nom</span>
+                    <input type="text" name="nom" autocomplete="name" required>
+                </label>
+                <label>
+                    <span>Email</span>
+                    <input type="email" name="email" autocomplete="email" required>
+                </label>
+                <label>
+                    <span>Message</span>
+                    <textarea name="message" rows="4" required></textarea>
+                </label>
+                <button class="button primary" type="submit">Envoyer</button>
+            </form>
+        </section>
+    </main>
+
+    <div id="product-modal" class="product-modal" aria-hidden="true">
+        <div class="product-detail" role="dialog" aria-modal="true" aria-labelledby="detail-title">
+            <button class="close-product" type="button" aria-label="Fermer le detail">Fermer</button>
+            <div id="product-detail-content" class="product-detail-content"></div>
+        </div>
+    </div>
+
+    <div id="cart-modal" class="cart-modal" aria-hidden="true">
+        <div class="cart-panel" role="dialog" aria-modal="true" aria-labelledby="cart-title">
+            <div class="cart-header">
+                <h2 id="cart-title">Votre panier</h2>
+                <button class="close-cart" type="button" aria-label="Fermer le panier">Fermer</button>
+            </div>
+            <div id="cart-items" class="cart-items"></div>
+            <div class="cart-footer">
+                <form id="checkout-form" class="checkout-form">
+                    <label>
+                        <span>Nom complet</span>
+                        <input type="text" name="customerName" autocomplete="name" required>
+                    </label>
+                    <label>
+                        <span>Telephone</span>
+                        <input type="tel" name="customerPhone" autocomplete="tel" required>
+                    </label>
+                    <label>
+                        <span>Email</span>
+                        <input type="email" name="customerEmail" autocomplete="email">
+                    </label>
+                    <label>
+                        <span>Adresse de livraison</span>
+                        <textarea name="customerAddress" rows="2" autocomplete="street-address"></textarea>
+                    </label>
+                </form>
+                <div class="cart-total-row">
+                    <span>Total</span>
+                    <strong id="cart-total">0 FCFA</strong>
+                </div>
+                <button id="checkout-button" class="button primary" type="submit" form="checkout-form">Commander</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="auth-modal" class="auth-modal" aria-hidden="true">
+        <div class="auth-panel" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+            <div class="auth-header">
+                <h2 id="auth-title">Connexion</h2>
+                <button class="close-auth" type="button" aria-label="Fermer">Fermer</button>
+            </div>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" type="button" data-tab="login">Connexion</button>
+                <button class="auth-tab" type="button" data-tab="register">Inscription</button>
+            </div>
+
+            <div id="login-tab" class="auth-tab-content active">
+                <form id="login-form" class="auth-form">
+                    <label for="login-email">
+                        <span>Email</span>
+                        <input id="login-email" type="email" name="email" autocomplete="email" required>
+                    </label>
+                    <label for="login-password">
+                        <span>Mot de passe</span>
+                        <input id="login-password" type="password" name="password" autocomplete="current-password" required>
+                    </label>
+                    <button class="button primary" type="submit">Se connecter</button>
+                </form>
+            </div>
+
+            <div id="register-tab" class="auth-tab-content">
+                <form id="register-form" class="auth-form">
+                    <label for="register-fullname">
+                        <span>Nom complet</span>
+                        <input id="register-fullname" type="text" name="fullname" autocomplete="name" required minlength="2">
+                    </label>
+                    <label for="register-email">
+                        <span>Email</span>
+                        <input id="register-email" type="email" name="email" autocomplete="email" required>
+                    </label>
+                    <label for="register-phone">
+                        <span>Téléphone</span>
+                        <input id="register-phone" type="tel" name="phone" autocomplete="tel" required pattern="[0-9+\-\s]+" placeholder="+225 XX XX XX XX">
+                    </label>
+                    <label for="register-password">
+                        <span>Mot de passe</span>
+                        <input id="register-password" type="password" name="password" autocomplete="new-password" required minlength="6">
+                    </label>
+                    <label for="register-confirm-password">
+                        <span>Confirmer le mot de passe</span>
+                        <input id="register-confirm-password" type="password" name="confirmPassword" autocomplete="new-password" required minlength="6">
+                    </label>
+                    <button class="button primary" type="submit">S'inscrire</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification" role="status" aria-live="polite"></div>
+
+    <footer class="footer">
+        <p>Maison Eclat Bijoux</p>
+        <p>Prix affiches en FCFA pour la Cote d'Ivoire.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="auth-translations.js"></script>
+    <script src="auth.js"></script>
+</body>
+</html>

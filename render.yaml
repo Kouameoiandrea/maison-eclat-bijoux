@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: maison-eclat
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    autoDeploy: true
+    healthCheckPath: /
+    healthCheckInterval: 10
+    maxInstanceCount: 1
+    memoryMB: 512
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
