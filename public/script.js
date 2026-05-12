@@ -1762,7 +1762,13 @@ async function readJsonResponse(response, fallbackMessage) {
     const contentType = response.headers.get('content-type') || '';
 
     if (contentType.includes('application/json')) {
-        return response.json();
+        const data = await response.json();
+
+        if (data && data.error) {
+            data.error = friendlyApiError(data.error, fallbackMessage);
+        }
+
+        return data;
     }
 
     const text = await response.text();
@@ -1772,6 +1778,16 @@ async function readJsonResponse(response, fallbackMessage) {
         : fallbackMessage);
     error.statusCode = response.status;
     throw error;
+}
+
+function friendlyApiError(message, fallbackMessage) {
+    const text = String(message || '');
+
+    if (/invalid login|badcredentials|535-5\.7\.8|username and password not accepted|smtp|gmail/i.test(text)) {
+        return `Email non envoye. Verifiez la configuration Gmail SMTP dans le fichier .env.`;
+    }
+
+    return text || fallbackMessage;
 }
 
 function setFallbackImage(image, product) {
@@ -1860,7 +1876,7 @@ function escapeXml(value) {
 
 function showNotification(message) {
     const notification = document.getElementById('notification');
-    notification.textContent = message;
+    notification.textContent = friendlyApiError(message, String(message || ''));
     notification.classList.add('show');
 
     window.clearTimeout(showNotification.timer);

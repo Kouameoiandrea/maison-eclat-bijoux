@@ -17,15 +17,16 @@ const PORT = Number(process.env.PORT) || 3006;
 const MAX_PORT_ATTEMPTS = 10;
 const CATALOG_VERSION = '2026-05-07-bijoux-prix-aeres-v24';
 const PRODUCT_PRICE_DISCOUNT_RATE = 0.25;
+const BUSINESS_PHONE = '+225 01 02 85 61 23';
 
 const mailSettings = {
-    host: process.env.SMTP_HOST,
+    host: cleanMailEnvValue(process.env.SMTP_HOST),
     port: Number(process.env.SMTP_PORT) || 587,
     secure: String(process.env.SMTP_SECURE || '').toLowerCase() === 'true',
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-    to: process.env.MAIL_TO || process.env.SMTP_USER,
-    from: process.env.MAIL_FROM || process.env.SMTP_USER
+    user: cleanMailEnvValue(process.env.SMTP_USER),
+    pass: normalizeSmtpPassword(cleanMailEnvValue(process.env.SMTP_PASS)),
+    to: cleanMailEnvValue(process.env.MAIL_TO) || cleanMailEnvValue(process.env.SMTP_USER),
+    from: buildMailFrom(cleanMailEnvValue(process.env.MAIL_FROM), cleanMailEnvValue(process.env.SMTP_USER))
 };
 
 const mailTransporter = createMailTransporter();
@@ -210,8 +211,16 @@ function loadEnvFile() {
 }
 
 function createMailTransporter() {
-    if (!mailSettings.host || !mailSettings.user || !mailSettings.pass || !mailSettings.to || !mailSettings.from) {
-        console.warn('Email non configure. Copiez .env.example vers .env et renseignez les champs SMTP.');
+    const missingConfig = !mailSettings.host || !mailSettings.user || !mailSettings.pass || !mailSettings.to || !mailSettings.from;
+    const usesExampleConfig = [
+        mailSettings.user,
+        mailSettings.pass,
+        mailSettings.to,
+        mailSettings.from
+    ].some(isExampleMailValue);
+
+    if (missingConfig || usesExampleConfig) {
+        console.warn('Email non configure. Renseignez de vraies valeurs SMTP dans .env.');
         return null;
     }
 
@@ -224,6 +233,27 @@ function createMailTransporter() {
             pass: mailSettings.pass
         }
     });
+}
+
+function isExampleMailValue(value) {
+    return /votre-|your-|example|mot-de-passe-app/i.test(String(value || ''));
+}
+
+function cleanMailEnvValue(value) {
+    const text = String(value || '').trim();
+    return isExampleMailValue(text) ? '' : text;
+}
+
+function normalizeSmtpPassword(value) {
+    return String(value || '').replace(/\s+/g, '');
+}
+
+function buildMailFrom(value, fallbackEmail) {
+    if (value) {
+        return value;
+    }
+
+    return fallbackEmail ? `Maison Eclat Bijoux <${fallbackEmail}>` : '';
 }
 
 function requireText(value, fieldName, maxLength = 1000) {
@@ -248,17 +278,23 @@ async function sendBusinessEmail({ subject, text, html, replyTo }) {
         return { sent: false, saved: true };
     }
 
-    await mailTransporter.sendMail({
-        from: mailSettings.from,
-        to: mailSettings.to,
-        replyTo,
-        subject,
-        text,
-        html
-    });
+    try {
+        await mailTransporter.sendMail({
+            from: mailSettings.from,
+            to: mailSettings.to,
+            replyTo,
+            subject,
+            text,
+            html
+        });
 
-    await saveBusinessEmail({ subject, text, html, replyTo, status: 'envoye' });
-    return { sent: true, saved: true };
+        await saveBusinessEmail({ subject, text, html, replyTo, status: 'envoye' });
+        return { sent: true, saved: true };
+    } catch (error) {
+        console.warn(`Email non envoye: ${formatMailErrorForLog(error)}`);
+        await saveBusinessEmail({ subject, text, html, replyTo, status: 'email_echec' });
+        return { sent: false, saved: true, error: formatMailErrorForLog(error) };
+    }
 }
 
 function saveBusinessEmail({ subject, text, html, replyTo, status }) {
@@ -277,6 +313,12 @@ function saveBusinessEmail({ subject, text, html, replyTo, status }) {
             }
         );
     });
+}
+
+function formatMailErrorForLog(error) {
+    const code = error && error.code ? `${error.code}: ` : '';
+    const message = error && error.message ? error.message : String(error || 'Erreur inconnue');
+    return `${code}${message}`.replace(/\s+/g, ' ').trim();
 }
 
 function saveOrder({ customerName, customerPhone, customerEmail, customerAddress, items, total }) {
@@ -2027,19 +2069,20 @@ app.post('/api/contact', async (req, res) => {
         const email = requireText(req.body.email, "L'email", 160);
         const message = requireText(req.body.message, 'Le message', 3000);
         const subject = `Nouveau message contact - ${nom}`;
+        const contactText = [
+            'Nouveau message depuis la boutique.',
+            '',
+            `Nom: ${nom}`,
+            `Email: ${email}`,
+            '',
+            'Message:',
+            message
+        ].join('\n');
 
         const delivery = await sendBusinessEmail({
             subject,
             replyTo: email,
-            text: [
-                'Nouveau message depuis le formulaire de contact.',
-                '',
-                `Nom: ${nom}`,
-                `Email: ${email}`,
-                '',
-                'Message:',
-                message
-            ].join('\n'),
+            text: contactText,
             html: `
                 <h2>Nouveau message depuis le formulaire de contact</h2>
                 <p><strong>Nom:</strong> ${escapeHtml(nom)}</p>
@@ -2053,7 +2096,7 @@ app.post('/api/contact', async (req, res) => {
             ok: true,
             message: delivery.sent
                 ? 'Message envoye par email.'
-                : "Email non configure: message enregistre dans la boite admin, aucun email n'a ete envoye."
+                : `Email non envoye. Verifiez la configuration Gmail SMTP dans le fichier .env.`
         });
     } catch (error) {
         res.status(error.statusCode || 500).json({ error: error.message || "Impossible d'envoyer le message." });
@@ -2097,24 +2140,24 @@ app.post('/api/orders', async (req, res) => {
             items: cleanItems,
             total
         });
+        const orderText = [
+            `Nouvelle commande #${orderId} depuis la boutique.`,
+            '',
+            `Nom: ${customerName}`,
+            `Telephone: ${customerPhone}`,
+            customerEmail ? `Email: ${customerEmail}` : '',
+            customerAddress ? `Adresse: ${customerAddress}` : '',
+            '',
+            'Produits:',
+            ...itemLines,
+            '',
+            `Total: ${formatMoney(total)}`
+        ].filter(Boolean).join('\n');
 
         const delivery = await sendBusinessEmail({
             subject: `Nouvelle commande #${orderId} - ${customerName}`,
             replyTo: customerEmail || undefined,
-            text: [
-                'Nouvelle commande depuis la boutique.',
-                `Commande: #${orderId}`,
-                '',
-                `Nom: ${customerName}`,
-                `Telephone: ${customerPhone}`,
-                customerEmail ? `Email: ${customerEmail}` : '',
-                customerAddress ? `Adresse: ${customerAddress}` : '',
-                '',
-                'Produits:',
-                ...itemLines,
-                '',
-                `Total: ${formatMoney(total)}`
-            ].filter(Boolean).join('\n'),
+            text: orderText,
             html: `
                 <h2>Nouvelle commande depuis la boutique</h2>
                 <p><strong>Commande:</strong> #${orderId}</p>
@@ -2142,7 +2185,7 @@ app.post('/api/orders', async (req, res) => {
             orderId,
             message: delivery.sent
                 ? 'Commande envoyee par email.'
-                : "Email non configure: commande enregistree dans la boite admin, aucun email n'a ete envoye."
+                : `Email non envoye. Verifiez la configuration Gmail SMTP dans le fichier .env.`
         });
     } catch (error) {
         res.status(error.statusCode || 500).json({ error: error.message || "Impossible d'envoyer la commande." });

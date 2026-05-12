@@ -35,6 +35,42 @@ Le formulaire de contact et le bouton de commande peuvent envoyer un email au pr
 
 Exemple avec Gmail: utilisez un mot de passe d'application, pas le mot de passe normal du compte.
 
+Configuration Gmail typique:
+
+```env
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=votre-adresse@gmail.com
+SMTP_PASS=votre-mot-de-passe-application
+MAIL_FROM="Maison Eclat Bijoux <votre-adresse@gmail.com>"
+MAIL_TO=votre-adresse@gmail.com
+```
+
+Pour tester sans passer par le formulaire:
+
+```bash
+npm run test:email
+```
+
+Si Gmail refuse la connexion, activez la validation en deux etapes sur le compte Google, puis creez un mot de passe d'application pour `SMTP_PASS`.
+
+Alternative si Gmail bloque encore: utilisez Brevo avec les identifiants SMTP.
+
+Configuration Brevo typique:
+
+```env
+SMTP_HOST=smtp-relay.brevo.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=votre-login-smtp-brevo
+SMTP_PASS=votre-cle-smtp-brevo
+MAIL_FROM="Maison Eclat Bijoux <votre-adresse-verifiee@domaine.com>"
+MAIL_TO=oiandreakouame@gmail.com
+```
+
+Dans Brevo, il faut verifier l'adresse utilisee dans `MAIL_FROM`, puis copier le login SMTP et la cle SMTP dans `.env`.
+
 ## Fonctionnalites
 
 - Catalogue de bijoux et montres avec images
