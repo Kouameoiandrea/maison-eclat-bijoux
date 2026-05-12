@@ -111,7 +111,18 @@ database.js         Adaptateur SQLite local / PostgreSQL production
 
 ## Base de donnees en production
 
-Pour un vrai hebergement, utilisez PostgreSQL. Sur Render, le fichier `render.yaml` cree automatiquement une base `maison-eclat-db` et injecte `DATABASE_URL` dans le serveur.
+Pour un vrai hebergement, utilisez PostgreSQL via Supabase.
+
+1. Creer un projet Supabase.
+2. Dans Supabase, ouvrir le panneau `Connect`.
+3. Copier l'URL PostgreSQL `Session pooler`.
+4. Dans l'hebergeur du site, par exemple Render, ajouter une variable d'environnement:
+
+```env
+DATABASE_URL=postgresql://postgres.xxxxx:motdepasse@aws-0-region.pooler.supabase.com:5432/postgres
+```
+
+Le fichier `render.yaml` declare `DATABASE_URL` comme variable a renseigner dans Render. Il ne cree pas de base Render, car la base vient de Supabase.
 
 En local, ne mettez pas `DATABASE_URL` dans `.env` si vous voulez garder SQLite.
 
