@@ -1100,9 +1100,16 @@ async function loadProducts(category = '') {
     try {
         const url = category ? `/api/produits/${encodeURIComponent(category)}` : '/api/produits';
         const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Erreur HTTP ${response.status}`);
+        }
         allProducts = await response.json();
+        if (!Array.isArray(allProducts)) {
+            throw new Error('Reponse produits invalide');
+        }
         applyProductFilters();
     } catch (error) {
+        console.error('Erreur de chargement des produits:', error);
         showNotification(t('productsError'));
     }
 }

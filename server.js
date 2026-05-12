@@ -2031,11 +2031,25 @@ app.get('/api/produits', (req, res) => {
     const sql = "SELECT * FROM produits ORDER BY id";
     db.all(sql, [], (err, rows) => {
         if (err) {
-            res.status(500).json({ error: err.message });
+            console.error('Erreur API produits:', err.message);
+            res.json(catalogProducts.map(productFromCatalogEntry));
             return;
         }
         
         res.json(rows);
+    });
+});
+
+app.get('/api/diagnostic', (req, res) => {
+    db.get('SELECT COUNT(*) as count FROM produits', [], (err, row) => {
+        res.json({
+            ok: !err,
+            database: db.kind || 'sqlite',
+            hasDatabaseUrl: Boolean(process.env.DATABASE_URL),
+            netlify: Boolean(process.env.NETLIFY),
+            productsCount: row && row.count !== undefined ? Number(row.count) : null,
+            error: err ? err.message : null
+        });
     });
 });
 
@@ -2044,7 +2058,10 @@ app.get('/api/produits/:categorie', (req, res) => {
     const sql = "SELECT * FROM produits WHERE categorie = ? ORDER BY id";
     db.all(sql, [categorie], (err, rows) => {
         if (err) {
-            res.status(500).json({ error: err.message });
+            console.error('Erreur API produits categorie:', err.message);
+            res.json(catalogProducts
+                .filter((product) => product[4] === categorie)
+                .map(productFromCatalogEntry));
             return;
         }
         
@@ -2056,12 +2073,25 @@ app.get('/api/categories', (req, res) => {
     const sql = "SELECT DISTINCT categorie FROM produits ORDER BY categorie";
     db.all(sql, [], (err, rows) => {
         if (err) {
-            res.status(500).json({ error: err.message });
+            console.error('Erreur API categories:', err.message);
+            res.json(chainCategories);
             return;
         }
         res.json(rows.map(row => row.categorie));
     });
 });
+
+function productFromCatalogEntry(product, index) {
+    return {
+        id: index + 1,
+        nom: product[0],
+        description: product[1],
+        prix: product[2],
+        image: product[3],
+        categorie: product[4],
+        stock: product[5]
+    };
+}
 
 app.post('/api/contact', async (req, res) => {
     try {

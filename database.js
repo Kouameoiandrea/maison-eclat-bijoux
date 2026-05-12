@@ -1,8 +1,17 @@
+const path = require('path');
+
 function createDatabase() {
     if (!process.env.DATABASE_URL) {
         const sqlite3 = require('sqlite3').verbose();
-        console.log('Base de donnees: SQLite local (ecommerce.db)');
-        return new sqlite3.Database('./ecommerce.db');
+        const sqlitePath = process.env.NETLIFY || process.env.AWS_LAMBDA_FUNCTION_NAME
+            ? path.join('/tmp', 'ecommerce.db')
+            : './ecommerce.db';
+        const db = new sqlite3.Database(sqlitePath);
+
+        db.kind = 'sqlite';
+        db.path = sqlitePath;
+        console.log(`Base de donnees: SQLite local (${sqlitePath})`);
+        return db;
     }
 
     const { Pool } = require('pg');
@@ -16,6 +25,7 @@ class PostgresCompatDatabase {
             connectionString,
             ssl: process.env.PGSSLMODE === 'disable' ? false : { rejectUnauthorized: false }
         });
+        this.kind = 'postgres';
         this.queue = Promise.resolve();
         this.transactionClient = null;
     }
