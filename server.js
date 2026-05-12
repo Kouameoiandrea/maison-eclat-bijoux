@@ -1,13 +1,13 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
-const sqlite3 = require('sqlite3').verbose();
 const https = require('https');
 const http = require('http');
 const url = require('url');
 const fs = require('fs');
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
+const { createDatabase } = require('./database.js');
 const { initUsersTable, setupAuthRoutes } = require('./auth-routes.js');
 
 loadEnvFile();
@@ -31,8 +31,8 @@ const mailSettings = {
 
 const mailTransporter = createMailTransporter();
 
-// Configuration de la base de données
-const db = new sqlite3.Database('./ecommerce.db');
+// Configuration de la base de donnees
+const db = createDatabase();
 
 // Initialize authentication
 initUsersTable(db);

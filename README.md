@@ -8,9 +8,10 @@ Boutique e-commerce simple pour vendre des bijoux et accessoires: chaines, montr
 - **CSS**: design responsive et mise en page
 - **JavaScript**: panier, filtres, interactions
 - **Node.js + Express**: serveur web et API produits
-- **SQLite**: base de donnees locale pour le catalogue
+- **SQLite**: base de donnees locale pour developper simplement
+- **PostgreSQL**: base de donnees de production facile a heberger sur Render, Railway ou Supabase
 
-Ce choix reste facile a comprendre: les fichiers importants sont peu nombreux et le site peut tourner sur un ordinateur sans configuration compliquee.
+Ce choix reste facile a comprendre: en local le site tourne sans configuration compliquee, et en production il utilise PostgreSQL des que `DATABASE_URL` est renseignee.
 
 ## Lancer le site
 
@@ -87,7 +88,7 @@ Dans Brevo, il faut verifier l'adresse utilisee dans `MAIL_FROM`, puis copier le
 
 ## Tableau de bord admin
 
-Les commandes validees depuis le panier sont stockees dans SQLite avec les produits commandes, le total et les coordonnees du client.
+Les commandes validees depuis le panier sont stockees dans la base active: SQLite en local, PostgreSQL en production.
 
 Ouvrir:
 
@@ -105,7 +106,14 @@ public/index.html   Structure de la boutique
 public/style.css    Design du site
 public/script.js    Panier, filtres et interactions
 ecommerce.db        Base SQLite creee automatiquement
+database.js         Adaptateur SQLite local / PostgreSQL production
 ```
+
+## Base de donnees en production
+
+Pour un vrai hebergement, utilisez PostgreSQL. Sur Render, le fichier `render.yaml` cree automatiquement une base `maison-eclat-db` et injecte `DATABASE_URL` dans le serveur.
+
+En local, ne mettez pas `DATABASE_URL` dans `.env` si vous voulez garder SQLite.
 
 ## Modifier les produits
 
