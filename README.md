@@ -126,6 +126,31 @@ Le fichier `render.yaml` declare `DATABASE_URL` comme variable a renseigner dans
 
 En local, ne mettez pas `DATABASE_URL` dans `.env` si vous voulez garder SQLite.
 
+## Hebergement Netlify
+
+Netlify sert les fichiers du dossier `public` et execute l'API Express avec une Netlify Function.
+
+Dans Netlify:
+
+1. Creer un nouveau site depuis GitHub.
+2. Choisir ce depot.
+3. Garder la configuration du fichier `netlify.toml`.
+4. Ajouter les variables d'environnement dans `Site configuration > Environment variables`:
+
+```env
+DATABASE_URL=URL_POSTGRESQL_SUPABASE_SESSION_POOLER
+JWT_SECRET=une-cle-secrete-longue
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=votre-adresse@gmail.com
+SMTP_PASS=votre-mot-de-passe-application
+MAIL_FROM="Maison Eclat Bijoux <votre-adresse@gmail.com>"
+MAIL_TO=votre-adresse@gmail.com
+```
+
+La variable `DATABASE_URL` doit aussi etre disponible pour les Functions.
+
 ## Modifier les produits
 
 Les produits de depart sont dans `server.js`, dans la liste `chainProducts`. Tu peux changer les noms, descriptions, prix en FCFA, images, categories et stocks.

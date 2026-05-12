@@ -2808,4 +2808,8 @@ function startServer(port, attemptsLeft = MAX_PORT_ATTEMPTS) {
     });
 }
 
-startServer(PORT);
+if (require.main === module) {
+    startServer(PORT);
+}
+
+module.exports = app;

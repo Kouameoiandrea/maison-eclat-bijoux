@@ -1,7 +1,6 @@
-const sqlite3 = require('sqlite3').verbose();
-
 function createDatabase() {
     if (!process.env.DATABASE_URL) {
+        const sqlite3 = require('sqlite3').verbose();
         console.log('Base de donnees: SQLite local (ecommerce.db)');
         return new sqlite3.Database('./ecommerce.db');
     }
